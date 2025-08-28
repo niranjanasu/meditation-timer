@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Meditation Timer</h1>
+
+        <div class="status-display">
+            <div id="breathing-circle"></div>
+            <p id="instruction" aria-live="polite">Press Start to Begin</p>
+            <p id="timer" aria-live="polite">0s</p>
+            <p id="round-counter" aria-live="polite"></p>
+        </div>
+
+        <div class="controls">
+            <h2>Configuration</h2>
+            <div class="input-group">
+                <label for="inhale-duration">Inhale (s):</label>
+                <input type="number" id="inhale-duration" value="4" min="1" aria-label="Inhale duration in seconds">
+            </div>
+            <div class="input-group">
+                <label for="hold1-duration">Hold (after inhale):</label>
+                <input type="number" id="hold1-duration" value="4" min="0" aria-label="Hold duration after inhale in seconds">
+            </div>
+            <div class="input-group">
+                <label for="exhale-duration">Exhale (s):</label>
+                <input type="number" id="exhale-duration" value="6" min="1" aria-label="Exhale duration in seconds">
+            </div>
+            <div class="input-group">
+                <label for="hold2-duration">Hold (after exhale):</label>
+                <input type="number" id="hold2-duration" value="2" min="0" aria-label="Hold duration after exhale in seconds">
+            </div>
+            <div class="input-group">
+                <label for="rounds">Rounds:</label>
+                <input type="number" id="rounds" value="10" min="1" aria-label="Number of meditation rounds">
+            </div>
+            <div class="input-group">
+                <label for="voice-select">Voice:</label>
+                <select id="voice-select" aria-label="Select voice for instructions"></select>
+            </div>
+            <div class="input-group">
+                <label for="sound-select">Background Sound:</label>
+                <select id="sound-select">
+                    <option value="none">None</option>
+                    <option value="rain">Rain</option>
+                    <option value="forest">Forest</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button id="start-btn">Start</button>
+                <button id="stop-btn" disabled>Stop</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Audio files for background sounds -->
+    <!-- Sounds from https://www.soundjay.com/ - Royalty-free -->
+    <audio id="rain-sound" src="https://www.soundjay.com/nature/rain-01.mp3" preload="auto"></audio>
+    <audio id="forest-sound" src="https://www.soundjay.com/nature/forest-01.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

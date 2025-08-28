@@ -1,0 +1,166 @@
+:root {
+    --bg-color: #f0f4f8;
+    --container-bg: #ffffff;
+    --primary-text-color: #333;
+    --header-color: #2c3e50;
+    --accent-color: #3498db;
+    --subtle-text-color: #7f8c8d;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --start-btn-bg: #2ecc71;
+    --start-btn-hover-bg: #27ae60;
+    --stop-btn-bg: #e74c3c;
+    --stop-btn-hover-bg: #c0392b;
+    --disabled-btn-bg: #bdc3c7;
+    --circle-gradient-start: #8e44ad;
+    --circle-gradient-end: #9b59b6;
+    --default-transition: 0.3s;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--primary-text-color);
+}
+
+.container {
+    background-color: var(--container-bg);
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px var(--shadow-color);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+h1 {
+    color: var(--header-color);
+    margin-bottom: 1rem;
+}
+
+.status-display {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background-color: #fafafa;
+}
+
+#breathing-circle {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(145deg, var(--circle-gradient-start), var(--circle-gradient-end));
+    border-radius: 50%;
+    margin: 0.5rem auto 1.5rem;
+    transform: scale(0.5);
+    /* Default duration, will be updated by JS */
+    transition: transform 4s ease-in-out, background-color var(--default-transition);
+}
+
+#breathing-circle.grow {
+    transform: scale(1.2);
+}
+
+
+#instruction {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 0;
+    min-height: 48px; /* To prevent layout shift */
+}
+
+#timer {
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--header-color);
+    margin: 0.5rem 0;
+}
+
+#round-counter {
+    font-size: 1rem;
+    color: var(--subtle-text-color);
+    min-height: 1.2rem; /* To prevent layout shift */
+}
+
+.controls h2 {
+    margin-top: 0;
+    color: #34495e;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.input-group label {
+    font-weight: 500;
+    color: var(--primary-text-color);
+    text-align: left;
+}
+
+.input-group input {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.input-group select {
+    flex-grow: 1;
+    max-width: 200px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+button {
+    flex-grow: 1;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color var(--default-transition), transform 0.1s;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+#start-btn { background-color: var(--start-btn-bg); color: white; }
+#start-btn:hover { background-color: var(--start-btn-hover-bg); }
+
+#stop-btn { background-color: var(--stop-btn-bg); color: white; }
+#stop-btn:hover { background-color: var(--stop-btn-hover-bg); }
+
+button:disabled {
+    background-color: var(--disabled-btn-bg);
+    cursor: not-allowed;
+}
+
+/* Hide HTML5 audio player controls */
+audio {
+    display: none;
+}
