@@ -7,6 +7,7 @@
  - **Customizable Breathing Cycles:** Set your own durations for inhale, hold, and exhale phases.
  - **Round Counter:** Practice for a specific number of breathing rounds.
  - **Visual Guide:** A simple circle animates (grows and shrinks) to guide your breathing pace.
+ - **"Get Ready" Phase:** A short countdown before the session starts to help you prepare.
  - **Audio Instructions:** Voice prompts for each phase of the breathing cycle.
  - **Multi-language Support:** Voice prompts are available in English and Tamil.
  - **Background Sounds:** Choose from ambient sounds like rain or a forest to enhance your meditation experience.

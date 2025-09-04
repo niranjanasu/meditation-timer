@@ -29,13 +29,22 @@ document.addEventListener('DOMContentLoaded', () => {
         INHALE: 'Inhale',
         HOLD: 'Hold',
         EXHALE: 'Exhale',
+        GET_READY: 'Get Ready',
     };
-    const MESSAGES = { SESSION_STOPPED: 'Session Stopped', MEDITATION_COMPLETE: 'Meditation Complete!', PRESS_START: 'Press Start to Begin' };
+    const MESSAGES = {
+        SESSION_STOPPED: 'Session Stopped',
+        MEDITATION_COMPLETE: 'Meditation Complete!',
+        PRESS_START: 'Press Start to Begin'
+    };
+
+    // LocalStorage Key
+    const SETTINGS_KEY = 'meditationTimerSettings';
 
     // State
     let isRunning = false;
     let currentRound = 0;
     let totalRounds = 0;
+    let sessionTimeoutId = null;
     let countdownInterval = null;
     let voices = [];
     let currentAudio = null;
@@ -45,8 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Translations for prompts
     const translations = {
-        'en': { [PHASES.INHALE]: 'Inhale', [PHASES.HOLD]: 'Hold', [PHASES.EXHALE]: 'Exhale', [MESSAGES.SESSION_STOPPED]: 'Session stopped.', [MESSAGES.MEDITATION_COMPLETE]: 'Meditation complete.', [MESSAGES.PRESS_START]: 'Press Start to Begin' },
-        'ta': { [PHASES.INHALE]: 'மூச்சை உள்ளிழு', [PHASES.HOLD]: 'நிறுத்து', [PHASES.EXHALE]: 'மூச்சை வெளியிடு', [MESSAGES.SESSION_STOPPED]: 'அமர்வு நிறுத்தப்பட்டது', [MESSAGES.MEDITATION_COMPLETE]: 'தியானம் முடிந்தது', [MESSAGES.PRESS_START]: 'தொடங்க ஸ்டார்ட் அழுத்தவும்' }
+        'en': { [PHASES.INHALE]: 'Inhale', [PHASES.HOLD]: 'Hold', [PHASES.EXHALE]: 'Exhale', [PHASES.GET_READY]: 'Get Ready', [MESSAGES.SESSION_STOPPED]: 'Session stopped.', [MESSAGES.MEDITATION_COMPLETE]: 'Meditation complete.', [MESSAGES.PRESS_START]: 'Press Start to Begin' },
+        'ta': { [PHASES.INHALE]: 'மூச்சை உள்ளிழு', [PHASES.HOLD]: 'நிறுத்து', [PHASES.EXHALE]: 'மூச்சை வெளியிடு', [PHASES.GET_READY]: 'தயாராகுங்கள்', [MESSAGES.SESSION_STOPPED]: 'அமர்வு நிறுத்தப்பட்டது', [MESSAGES.MEDITATION_COMPLETE]: 'தியானம் முடிந்தது', [MESSAGES.PRESS_START]: 'தொடங்க ஸ்டார்ட் அழுத்தவும்' }
     };
 
     function populateVoiceList() {
@@ -63,11 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.setAttribute('data-name', voice.name);
                 voiceSelect.appendChild(option);
             });
-        
-        // Restore selection if possible
-        if (currentSelection) {
-            voiceSelect.value = currentSelection;
-        }
+        loadSettings(); // Load settings after voices are populated
         updateStaticText();
     }
 
@@ -101,7 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Awaitable delay helper using a Promise
     function delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => {
+            // Clear previous timeout if stop is called
+            clearTimeout(sessionTimeoutId);
+            sessionTimeoutId = setTimeout(resolve, ms);
+        });
     }
 
     function updateCountdown(duration) {
@@ -153,6 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: PHASES.HOLD, duration: durations.hold2 },
         ];
 
+        // "Get Ready" phase before starting
+        await runPhase(PHASES.GET_READY, 3);
+        if (!isRunning) return; // Stop if user cancelled during "Get Ready"
+
         while (isRunning && currentRound <= totalRounds) {
             roundCounterDisplay.textContent = `Round ${currentRound} of ${totalRounds}`;
 
@@ -185,6 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
         totalRounds = parseInt(configInputs.rounds.value, 10);
         currentRound = 1;
 
+        saveSettings();
+
         // UI updates for running state
         startBtn.disabled = true;
         stopBtn.disabled = false;
@@ -213,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.disabled = false;
         stopBtn.disabled = true;
         Object.values(configInputs).forEach(input => input.disabled = false);
+        // Re-enable voice select only if supported
         voiceSelect.disabled = false;
         soundSelect.disabled = false;
         speak(messageKey);
@@ -237,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopMeditation() {
         if (!isRunning) return;
         isRunning = false;
+        clearTimeout(sessionTimeoutId);
         clearInterval(countdownInterval);
         countdownInterval = null;
         if (synth) {
@@ -250,17 +267,60 @@ document.addEventListener('DOMContentLoaded', () => {
         resetUI(MESSAGES.MEDITATION_COMPLETE);
     }
 
+    function saveSettings() {
+        const settings = {
+            inhale: configInputs.inhale.value,
+            hold1: configInputs.hold1.value,
+            exhale: configInputs.exhale.value,
+            hold2: configInputs.hold2.value,
+            rounds: configInputs.rounds.value,
+            voice: voiceSelect.value,
+            sound: soundSelect.value,
+        };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+        const savedSettings = localStorage.getItem(SETTINGS_KEY);
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            configInputs.inhale.value = settings.inhale || '6';
+            configInputs.hold1.value = settings.hold1 || '6';
+            configInputs.exhale.value = settings.exhale || '8';
+            configInputs.hold2.value = settings.hold2 || '4';
+            configInputs.rounds.value = settings.rounds || '10';
+            soundSelect.value = settings.sound || 'none';
+
+            // Wait for voices to be populated before setting the voice
+            const voiceInterval = setInterval(() => {
+                if (voiceSelect.options.length > 0) {
+                    voiceSelect.value = settings.voice;
+                    // If the saved voice is no longer available, it will default to the first option
+                    clearInterval(voiceInterval);
+                }
+            }, 100);
+        }
+    }
+
     function initialize() {
+        // Load settings first, then populate voices which might override voice selection
+        loadSettings();
         populateVoiceList();
         if (synth && speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = populateVoiceList;
         }
+        // Add event listeners to save settings on change
+        Object.values(configInputs).forEach(input => input.addEventListener('change', saveSettings));
+        soundSelect.addEventListener('change', saveSettings);
+        voiceSelect.addEventListener('change', () => {
+            saveSettings();
+            updateStaticText();
+        });
     }
 
     // Event Listeners
     startBtn.addEventListener('click', startMeditation);
     stopBtn.addEventListener('click', stopMeditation);
-    voiceSelect.addEventListener('change', updateStaticText);
 
     initialize();
 });
