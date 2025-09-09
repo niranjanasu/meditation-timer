@@ -1,0 +1,17 @@
+curl '' --output one.mp4\
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'Referer: https://keralaayurvedaacademy.talentlms.com/' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36' \
+  -H 'sec-ch-ua: "Chromium";v="140", "Not=A?Brand";v="24", "Brave";v="140"' \
+  -H 'Range: bytes=0-' \
+  -H 'sec-ch-ua-mobile: ?0'
+
+curl 'https://cdn.talentlms.com/keralaayurvedaacademy/1574952244_Ah%202%20W04-edit.mp4?Expires=1757462400&Signature=GFGRZMY2-YI9aljYeM6tQFFNm8covFTY8qHWMDP0gmHmm1KiCbKo3MLszQcvOTjgnD9tInWkLnxdupa8JzGe0AIfnN5oMA-FY9meAPJ1VoWjOlFq4yp5UeEKWkXbVyBxphMVzSwrLdX5NEvWYwhwQN1yg4XcBP8S3NazCMFwJssZbaIckVUpCDMGyAyMUqh2FVEhyOipaHzHM~1vE0NxmPThAG9CWrMoYR-kNGDHvhPTkXiiDT~3tijdziJosqI7nQBjiNMv~Pw3gaDeepzGlDVbAw8E4aN3Bj3o9faDJUMyOMLrweBqmZCdHwCiQgAFhmxX0oUUtZxeItXxGG9XUQ__&Key-Pair-Id=APKAJDCWVQTW4P3KI3XA' --output one.mp4\
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'Referer: https://keralaayurvedaacademy.talentlms.com/' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36' \
+  -H 'sec-ch-ua: "Chromium";v="140", "Not=A?Brand";v="24", "Brave";v="140"' \
+  -H 'Range: bytes=0-' \
+  -H 'sec-ch-ua-mobile: ?0'
+
+  

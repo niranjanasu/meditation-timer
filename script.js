@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const voiceSelect = document.getElementById('voice-select');
     const soundSelect = document.getElementById('sound-select');
 
+
     // Audio Elements
     const audioElements = {
         rain: document.getElementById('rain-sound'),
@@ -48,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let countdownInterval = null;
     let voices = [];
     let currentAudio = null;
+    let wakeLock = null;
+    const wakeLockVideo = document.getElementById('wake-lock-video');
 
     // Web Speech API for audio prompts
     const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
@@ -185,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function startMeditation() {
+    async function startMeditation() {
         if (isRunning) return;
 
         if (!synth) {
@@ -199,6 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentRound = 1;
 
         saveSettings();
+
+        await requestWakeLock();
 
         // UI updates for running state
         startBtn.disabled = true;
@@ -233,6 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
         soundSelect.disabled = false;
         speak(messageKey);
 
+        releaseWakeLock();
+
         // Stop background sound
         if (currentAudio) {
             currentAudio.pause();
@@ -265,6 +272,33 @@ document.addEventListener('DOMContentLoaded', () => {
     function finishMeditation() {
         isRunning = false; // Set to false as the session is over
         resetUI(MESSAGES.MEDITATION_COMPLETE);
+    }
+
+    // --- Wake Lock ---
+    async function requestWakeLock() {
+        // Use Screen Wake Lock API if supported
+        if ('wakeLock' in navigator) {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => {
+                    // This can happen if the user switches tabs, etc.
+                    console.log('Screen Wake Lock was released');
+                });
+                console.log('Screen Wake Lock is active.');
+            } catch (err) {
+                console.error(`Wake Lock request failed: ${err.name}, ${err.message}`);
+                // Fallback to video method if Wake Lock fails
+                wakeLockVideo.play().catch(e => console.error("Wake Lock video fallback failed:", e));
+            }
+        } else {
+            // Fallback for older browsers: play a silent video
+            wakeLockVideo.play().catch(e => console.error("Wake Lock video fallback failed:", e));
+        }
+    }
+
+    function releaseWakeLock() {
+        wakeLock?.release().then(() => wakeLock = null);
+        wakeLockVideo.pause();
     }
 
     function saveSettings() {
