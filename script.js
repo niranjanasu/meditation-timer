@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const breathingCircle = document.getElementById('breathing-circle');
     const instructionDisplay = document.getElementById('instruction');
     const timerDisplay = document.getElementById('timer');
-    const roundCounterDisplay = document.getElementById('round-counter');
+    const roundInfoDisplay = document.getElementById('round-info');
+    const roundsRemainingDisplay = document.getElementById('rounds-remaining');
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
     const voiceSelect = document.getElementById('voice-select');
@@ -170,7 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isRunning) return; // Stop if user cancelled during "Get Ready"
 
         while (isRunning && currentRound <= totalRounds) {
-            roundCounterDisplay.textContent = `Round ${currentRound} of ${totalRounds}`;
+            roundInfoDisplay.textContent = `Round ${currentRound} of ${totalRounds}`;
+            const roundsRemaining = totalRounds - currentRound;
+            const remainingText = roundsRemaining > 0 ? `${roundsRemaining} round(s) remaining` : 'This is the final round';
+            roundsRemainingDisplay.textContent = remainingText;
 
             for (const phase of cyclePhases) {
                 if (!isRunning) break;
@@ -229,7 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetUI(messageKey) {
         instructionDisplay.textContent = getTranslatedText(messageKey);
         timerDisplay.textContent = '0s';
-        roundCounterDisplay.textContent = '';
+        roundInfoDisplay.textContent = '';
+        roundsRemainingDisplay.textContent = '';
         startBtn.disabled = false;
         stopBtn.disabled = true;
         Object.values(configInputs).forEach(input => input.disabled = false);

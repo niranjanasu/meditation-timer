@@ -88,6 +88,12 @@ h1 {
     min-height: 1.2rem; /* To prevent layout shift */
 }
 
+#round-counter span {
+    display: block;
+}
+
+#rounds-remaining { font-size: 0.9rem; }
+
 .controls h2 {
     margin-top: 0;
     color: #34495e;
