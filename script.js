@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         // "Get Ready" phase before starting
-        await runPhase(PHASES.GET_READY, 3);
+        await runPhase(PHASES.GET_READY, 9);
         if (!isRunning) return; // Stop if user cancelled during "Get Ready"
 
         while (isRunning && currentRound <= totalRounds) {
